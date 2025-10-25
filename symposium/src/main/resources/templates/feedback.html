@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Feedback Page</title>
+</head>
+<body>
+    <h2>Event Feedback</h2>
+    <form id="feedbackForm">
+        User ID: <input type="number" id="userId" required><br>
+        Event ID: <input type="number" id="eventId" required><br>
+        Feedback: <input type="text" id="feedback"><br>
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        document.getElementById("feedbackForm").addEventListener("submit", function(e){
+            e.preventDefault();
+            let data = {
+                userId: document.getElementById("userId").value,
+                eventId: document.getElementById("eventId").value,
+                feedback: document.getElementById("feedback").value
+            };
+
+            fetch('/feedback/add', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert("Feedback saved!");
+            })
+            .catch(err => console.error(err));
+        });
+    </script>
+</body>
+</html>

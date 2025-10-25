@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Event Result</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        /* Animated gradient background */
+        body {
+            margin: auto;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow-y: scroll;
+            background: linear-gradient(315deg, rgba(101,0,94,1) 3%, rgba(60,132,206,1) 38%, rgba(48,238,226,1) 68%, rgba(255,25,25,1) 98%);
+            animation: gradient 15s ease infinite;
+            background-size: 400% 400%;
+            background-attachment: fixed;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+
+        .wave {
+            background: rgb(255 255 255 / 25%);
+            border-radius: 1000% 1000% 0 0;
+            position: fixed;
+            width: 200%;
+            height: 12em;
+            animation: wave 10s -3s linear infinite;
+            transform: translate3d(0, 0, 0);
+            opacity: 0.8;
+            bottom: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        .wave:nth-of-type(2) { bottom: -1.25em; animation: wave 18s linear reverse infinite; opacity: 0.8; }
+        .wave:nth-of-type(3) { bottom: -2.5em; animation: wave 20s -1s reverse infinite; opacity: 0.9; }
+
+        @keyframes wave {
+            2% { transform: translateX(1); }
+            25% { transform: translateX(-25%); }
+            50% { transform: translateX(-50%); }
+            75% { transform: translateX(-25%); }
+            100% { transform: translateX(1); }
+        }
+
+        h2 {
+            color: white; 
+            text-shadow: 0 0 8px rgba(255,255,255,0.6); 
+            text-align:center; 
+            margin-top:20px;
+        }
+
+        /* Glass effect for form and result */
+        form, #resultDisplay {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 8px 32px 0 rgba(0,0,0,0.15);
+            padding: 25px;
+            width: 450px;
+            margin: 30px auto;
+            text-align: center;
+            color: white;
+        }
+
+        input, select, textarea {
+            margin: 5px;
+            padding: 8px;
+            width: 80%;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.4);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 15px;
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+
+        select {
+            color: rgb(19, 16, 16);
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            cursor: pointer;
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            background: linear-gradient(90deg, #0072ff, #00c6ff);
+            box-shadow: 0 0 10px rgba(0, 114, 255, 0.6);
+        }
+
+        /* Glass effect for download button */
+        #downloadBtn {
+            margin-top: 15px;
+            padding: 10px 25px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: rgb(0, 0, 0);
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        p{
+            color: black;
+        }
+
+        #downloadBtn:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.35);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+
+    <h2>Event Result</h2>
+    <form id="resultForm">
+        Event ID: <input type="text" id="eventId" required placeholder="Enter Event ID"><br>
+        Winner Name: <input type="text" id="winnerName" required placeholder="Enter Winner Name"><br>
+        Position:
+        <select id="position" required>
+            <option value="">Select Position</option>
+            <option value="1st">1st</option>
+            <option value="2nd">2nd</option>
+            <option value="3rd">3rd</option>
+        </select><br>
+        Score: <input type="number" id="score" required placeholder="Enter Score"><br>
+        Total Mark: <input type="number" id="totalMark" required placeholder="Enter Total Mark"><br>
+        Judge Remark:
+        <select id="judgeRemark" required>
+            <option value="">Select Remark</option>
+            <option value="Excellent Presentation">Excellent Presentation</option>
+            <option value="Good Effort">Good Effort</option>
+            <option value="Fast & Accurate Coding">Fast & Accurate Coding</option>
+        </select><br>
+
+        Certificate ID: <input type="text" id="certificate" required placeholder="Enter Certificate ID"><br>
+        <button type="submit">Show Result</button>
+    </form>
+
+    <div id="resultDisplay" style="display:none;">
+        <p><strong>Event ID:</strong> <span id="outEventId"></span></p>
+        <p><strong>Winner Name:</strong> <span id="outWinner"></span></p>
+        <p><strong>Position:</strong> <span id="outPosition"></span></p>
+        <p><strong>Score:</strong> <span id="outScore"></span> / <span id="outTotal"></span></p>
+        <p><strong>Judge Remark:</strong> <span id="outRemark"></span></p>
+        <p><strong>Certificate ID:</strong> <span id="outCertificate"></span></p>
+
+        <!-- Visual download button -->
+        <button id="downloadBtn">Download Certificate PDF</button>
+        <button id="buttonbtn">AdminLogin</button>
+    </div>
+
+    <script>
+        document.getElementById("resultForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            // Collect values
+            const winnerName = document.getElementById("winnerName").value;
+            const position = document.getElementById("position").value;
+            const eventId = document.getElementById("eventId").value;
+            const judgeRemark = document.getElementById("judgeRemark").value;
+            const certificateId = document.getElementById("certificate").value;
+            const score = document.getElementById("score").value;
+            const totalMark = document.getElementById("totalMark").value;
+
+            // Show result
+            const resultDiv = document.getElementById("resultDisplay");
+            resultDiv.style.display = "block";
+            document.getElementById("outEventId").textContent = eventId;
+            document.getElementById("outWinner").textContent = winnerName;
+            document.getElementById("outPosition").textContent = position;
+            document.getElementById("outScore").textContent = score;
+            document.getElementById("outTotal").textContent = totalMark;
+            document.getElementById("outRemark").textContent = judgeRemark;
+            document.getElementById("outCertificate").textContent = certificateId;
+
+            // Scroll to result
+            resultDiv.scrollIntoView({ behavior: "smooth" });
+        });
+
+        // Download button event
+        document.getElementById("downloadBtn").addEventListener("click", downloadCertificate);
+
+        // Admin login button
+        document.getElementById("buttonbtn").addEventListener("click", function(e){
+            e.preventDefault();
+            window.location.href = "/adminlogin";
+        });
+
+        function downloadCertificate() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: "landscape", unit: "px", format: [600, 400] });
+
+            const winnerName = document.getElementById("winnerName").value;
+            const position = document.getElementById("position").value;
+            const eventId = document.getElementById("eventId").value;
+            const judgeRemark = document.getElementById("judgeRemark").value;
+            const certificateId = document.getElementById("certificate").value;
+
+            // Gradient Golden Border
+            const gradientColors = [
+                [255, 215, 0],  // Bright gold
+                [238, 201, 0],
+                [212, 175, 55], // Main gold
+                [184, 134, 11]  // Darker gold
+            ];
+            const borderWidth = 6; // total border thickness
+            for (let i = 0; i < borderWidth; i++) {
+                const color = gradientColors[Math.floor(i / borderWidth * gradientColors.length)];
+                doc.setDrawColor(...color);
+                doc.setLineWidth(1);
+                doc.rect(15 + i, 15 + i, 570 - 2*i, 370 - 2*i);
+            }
+
+            // College & Symposium in golden
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(22);
+            doc.setTextColor(0);
+            doc.text("The Kavery Engineering College", 300, 50, {align:"center"});
+            doc.setFontSize(14);
+            doc.text("(AUTONOMOUS)", 300, 68, {align:"center"});
+            doc.setTextColor(212,175,55);
+            doc.setFontSize(22);
+            doc.text("SYMPOSIUM 2025", 300, 90, {align:"center"});
+
+            // Certificate Title
+            doc.setFontSize(28);
+            doc.text("Certificate of Achievement", 300, 120, {align:"center"});
+
+            // Content
+            doc.setFont("times", "normal");
+            doc.setFontSize(16);
+            doc.setTextColor(0); // main text black
+            doc.text("This is to certify that", 300, 160, {align:"center"});
+            doc.setTextColor(212,175,55); // golden for winner name
+            doc.setFontSize(18);
+            doc.text(winnerName, 300, 190, {align:"center"});
+            doc.setTextColor(0);
+            doc.setFontSize(16);
+            doc.text(`has secured ${position} position in`, 300, 220, {align:"center"});
+            doc.text(`Event ID: ${eventId}`, 300, 245, {align:"center"});
+            doc.text(`Judge Remark: ${judgeRemark}`, 300, 270, {align:"center"});
+            doc.text(`Certificate ID: ${certificateId}`, 300, 295, {align:"center"});
+
+            // Department
+            doc.setFontSize(13);
+            doc.setTextColor(0,51,171);
+            doc.text("Organized by: Department of Information Technology", 300, 340, {align:"center"});
+
+            // Signatures
+            doc.setFontSize(13);
+            doc.setTextColor(0,51,171);
+            doc.text("Dr.M.Balamurugan", 110, 345, {align:"center"});
+            doc.setFontSize(12);
+            doc.setTextColor(0);
+            doc.text("HOD Signature", 110, 360, {align:"center"});
+
+            doc.setFontSize(14);
+            doc.setTextColor(0,51,171);
+            doc.text("Dr.V.Duraisamy", 490, 345, {align:"center"});
+            doc.setFontSize(11);
+            doc.setTextColor(0);
+            doc.text("Principal Signature", 490, 360, {align:"center"});
+
+            doc.save(`Certificate_${winnerName}.pdf`);
+        }
+    </script>
+</body>
+</html>

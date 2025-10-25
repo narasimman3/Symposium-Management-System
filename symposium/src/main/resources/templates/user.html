@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login & Admin Registration</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:100%; height:100%; font-family: Arial, sans-serif; background:#021027; overflow:hidden; display:flex; justify-content:center; align-items:center; }
+
+  /* Floating RGB spheres */
+  .circle {
+    position: absolute;
+    border-radius: 50%;
+    mix-blend-mode: screen;
+    background: radial-gradient(hsl(180,100%,80%), hsla(180,100%,80%,0) 60%);
+    animation: fadein 2s infinite alternate, scaleAnim 3s infinite alternate;
+  }
+  @keyframes fadein { 0%{opacity:0.3;} 100%{opacity:1;} }
+  @keyframes scaleAnim { 0%{transform:scale(0.5);} 100%{transform:scale(1.5);} }
+
+  /* Container for both forms */
+  .form-container {
+    display:flex;
+    gap:40px;
+    z-index:1;
+    flex-wrap: wrap;
+    justify-content:center;
+  }
+
+  form {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 30px;
+    width: 320px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    box-shadow: 0 0 40px rgba(0,255,255,0.3), inset 0 0 20px rgba(255,255,255,0.1);
+    border:1px solid rgba(255,255,255,0.2);
+    animation: glow 3s ease-in-out infinite alternate;
+    color:white;
+  }
+  @keyframes glow {
+    0% { box-shadow:0 0 25px rgba(0,255,255,0.4), inset 0 0 15px rgba(255,255,255,0.2); }
+    100% { box-shadow:0 0 50px rgba(0,255,255,0.8), inset 0 0 25px rgba(255,0,255,0.4); }
+  }
+
+  h2 {
+    color:#00ffff;
+    margin-bottom:20px;
+    text-shadow:0 0 10px #00ffff, 0 0 20px #ff00ff;
+  }
+
+  input {
+    width: 90%;
+    padding: 12px;
+    margin: 10px 0;
+    border:none;
+    border-radius:10px;
+    background: rgba(255,255,255,0.1);
+    color:white;
+    font-size:1em;
+    text-align:center;
+    box-shadow: inset 0 0 10px rgba(255,255,255,0.2);
+    transition:0.3s;
+  }
+  input:focus {
+    outline:none;
+    box-shadow: 0 0 15px rgba(0,255,255,0.8), inset 0 0 10px rgba(255,0,255,0.5);
+    background: rgba(255,255,255,0.25);
+  }
+
+  button {
+    margin-top:15px;
+    padding:12px 25px;
+    border-radius:25px;
+    border:none;
+    background: linear-gradient(90deg,#00c6ff,#0072ff);
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    box-shadow:0 0 15px rgba(0,255,255,0.7);
+    transition:0.3s;
+  }
+  button:hover {
+    transform: scale(1.05);
+    background: linear-gradient(90deg,#0072ff,#00c6ff);
+    box-shadow:0 0 25px rgba(255,0,255,0.8);
+  }
+
+  @media (max-width:700px){ .form-container{flex-direction:column; gap:20px;} }
+</style>
+</head>
+<body>
+
+<script>
+  // Generate floating RGB spheres
+  for(let i=0;i<50;i++){
+    const div = document.createElement('div');
+    div.className='circle';
+    div.style.left=Math.random()*100+'vw';
+    div.style.top=Math.random()*100+'vh';
+    div.style.width=5+Math.random()*8+'px';
+    div.style.height=5+Math.random()*8+'px';
+    div.style.animationDuration=2+Math.random()*3+'s';
+    document.body.appendChild(div);
+  }
+</script>
+
+<div class="form-container">
+
+  <!-- User Login Form -->
+  <form id="userForm">
+    <h2>User Login</h2>
+    <input type="text" id="name" placeholder="Name" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button type="submit">Login</button>
+  </form>
+
+  <!-- Admin Registration Form -->
+  <form id="registerForm">
+    <h2>Admin Registration</h2>
+    <input type="text" name="username" placeholder="Enter Your Name:" required>
+    <input type="email" name="email" placeholder="Enter Your Email" required>
+    <input type="password" name="password" placeholder="Enter Your Password" required>
+    <button type="submit">Register</button>
+  </form>
+
+</div>
+
+<script>
+    document.getElementById("userForm").addEventListener("submit", function(e){
+      e.preventDefault();
+
+      // If you are testing locally, use relative path
+      window.location.href = "/registration"; 
+    });
+
+      const form = document.getElementById('registerForm');z
+  form.addEventListener('submit', function(e) {
+    e.preventDefault(); // Prevent actual form submission
+    
+    // Example: You can add validation or API call here
+    const username = form.username.value;
+    const email = form.email.value;
+    const password = form.password.value;
+
+    if(username && email && password) {
+      alert(`Registration successful for ${username}!`);
+      // Redirect to adminlogin.html
+      window.location.href = '/adminlogin';
+    } else {
+      alert('Please fill in all fields!');
+    }
+  });
+</script>
+
+</body>
+</html>
+
+
+
+

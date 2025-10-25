@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Login</title>
+<style>
+body { 
+  font-family: Arial; 
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+}
+
+.container { 
+  position: relative;
+  max-width: 400px; 
+  width: 100%;
+  padding: 30px; 
+  background: rgba(255,255,255,0.08); 
+  border-radius: 15px; 
+  box-shadow: 0 0 20px rgba(0,255,255,0.4);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.2);
+  text-align: center;
+}
+
+h2 { 
+  color: #00ffff; 
+  margin-bottom: 15px; 
+  text-shadow: 0 0 10px #00ffff;
+}
+
+input, button { 
+  width: 100%; 
+  padding: 10px; 
+  margin: 10px 0; 
+  border-radius: 6px; 
+  border: none; 
+  outline: none;
+  font-size: 16px;
+}
+
+input {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  box-shadow: 0 0 10px rgba(0,255,255,0.2) inset;
+}
+
+input::placeholder {
+  color: rgba(255,255,255,0.7);
+}
+
+button { 
+  background: #00ffff; 
+  color: #000; 
+  font-weight: bold; 
+  cursor: pointer; 
+  box-shadow: 0 0 20px #00ffff;
+  transition: 0.3s;
+}
+
+button:hover { 
+  background: #00e6e6; 
+  box-shadow: 0 0 30px #00ffff;
+}
+
+.error { 
+  color: #ff6666; 
+  text-align: center; 
+  margin-bottom: 10px; 
+}
+
+/* Lottie container */
+.lottie-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+canvas {
+  width: 120px;
+  height: 120px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="lottie-box">
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <h2>Admin Login</h2>
+  <div class="error" id="errorMsg"></div>
+
+  <form id="loginForm">
+    <input type="email" name="email" placeholder="Enter Email" required>
+    <input type="password" name="password" placeholder="Enter Password" required>
+    <button type="submit">Login</button>
+  </form>
+</div>
+
+<script>
+  // Fixed admin credentials
+  const allowedAdmins = [
+    { email: "admin1@example.com", password: "password123" },
+    { email: "admin2@example.com", password: "pass456" }
+  ];
+
+  document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const email = form.email.value.trim();
+    const password = form.password.value.trim();
+    const errorMsg = document.getElementById('errorMsg');
+
+    if(!email || !password) {
+        errorMsg.innerText = "All fields are required!";
+        return;
+    }
+
+    const validAdmin = allowedAdmins.find(admin => admin.email === email && admin.password === password);
+    if(validAdmin){
+      alert("Login Successful!");
+      window.location.href = "/admindashboard"; // Redirect to dashboard
+    } else {
+      errorMsg.innerText = "Invalid Email or Password! Only fixed admins allowed.";
+    }
+  });
+</script>
+
+<!-- Lottie animation -->
+<script type="module">
+  import { DotLottie } from "https://cdn.jsdelivr.net/npm/@lottiefiles/dotlottie-web/+esm";
+  new DotLottie({
+    autoplay: true,
+    loop: true,
+    canvas: document.getElementById("canvas"),
+    src: "https://lottie.host/4db68bbd-31f6-4cd8-84eb-189de081159a/IGmMCqhzpt.lottie"
+  });
+</script>
+
+</body>
+</html>

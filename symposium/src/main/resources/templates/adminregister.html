@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Registration</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #1f1c2c, #928dab);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .container {
+    width: 400px;
+    padding: 40px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 0 40px rgba(0,255,255,0.3);
+    border: 1px solid rgba(255,255,255,0.2);
+    text-align: center;
+    color: #fff;
+  }
+
+  h2 {
+    margin-bottom: 30px;
+    color: #00ffff;
+    text-shadow: 0 0 10px #00ffff;
+  }
+
+  input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    font-size: 16px;
+    outline: none;
+    box-shadow: 0 0 10px rgba(0,255,255,0.2) inset;
+    transition: 0.3s;
+  }
+
+  input:focus {
+    box-shadow: 0 0 20px #00ffff inset;
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0% { box-shadow: 0 0 20px #00ffff inset; }
+    50% { box-shadow: 0 0 30px #00ffff inset; }
+    100% { box-shadow: 0 0 20px #00ffff inset; }
+  }
+
+  button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 10px;
+    background: #00ffff;
+    color: #000;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 0 20px #00ffff;
+  }
+
+  button:hover {
+    background: #00e6e6;
+    box-shadow: 0 0 30px #00ffff;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Admin Registration</h2>
+  <form id="registerForm">
+    <input type="text" name="username" placeholder="Enter Your Name:" required>
+    <input type="email" name="email" placeholder="Enter Your Email" required>
+    <input type="password" name="password" placeholder="Enter Your Password" required>
+    <button type="submit">Register</button>
+  </form>
+</div>
+
+<script>
+  const allowedAdmins = [
+    { email: "admin1@example.com", password: "password123" },
+    { email: "admin2@example.com", password: "pass456" }
+  ];
+
+  const form = document.getElementById('registerForm');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const username = form.username.value.trim();
+    const email = form.email.value.trim();
+    const password = form.password.value.trim();
+
+    // Check against fixed credentials
+    const validAdmin = allowedAdmins.find(admin => admin.email === email && admin.password === password);
+
+    if(!validAdmin){
+      alert("Registration failed! Only fixed admin credentials are allowed.");
+      return;
+    }
+
+    if(username && email && password){
+      alert(`Registration successful for ${username}!`);
+      // Redirect to admin login page
+      window.location.href = '/result'; // Make sure this file exists
+    } else {
+      alert('Please fill in all fields!');
+    }
+  });
+</script>
+
+</body>
+</html>

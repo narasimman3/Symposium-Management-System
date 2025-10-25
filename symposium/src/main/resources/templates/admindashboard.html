@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body { font-family: Arial; background:#0d0d0d; color:#fff; margin:0; padding:0; }
+.container { width:95%; margin:20px auto; }
+.card { background:#111; padding:20px; margin-bottom:20px; border-radius:10px; }
+table { width:100%; border-collapse:collapse; margin-top:10px; }
+th, td { padding:8px; border:1px solid #333; text-align:left; }
+th { background:#222; }
+.heat-low { background-color:#1a1a1a; }
+.heat-medium { background-color:#4444aa; }
+.heat-high { background-color:#ff4444; }
+canvas { max-width:800px; margin:20px auto; display:block; }
+</style>
+</head>
+<body>
+<div class="container">
+<h2>Admin Dashboard</h2>
+
+<!-- Summary -->
+<div class="card">
+    <h3>Summary</h3>
+    <p>Events: <b th:text="${eventCount}">0</b></p>
+    <p>Users: <b th:text="${userCount}">0</b></p>
+    <p>Registrations: <b th:text="${registrationCount}">0</b></p>
+    <p>Results: <b th:text="${resultCount}">0</b></p>
+</div>
+
+<!-- Events Table -->
+<div class="card">
+<h3>Events</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th><th>Title</th><th>Description</th><th>Date</th><th>Time</th><th>Venue</th><th>Category</th><th>Max Participants</th>
+</tr>
+</thead>
+<tbody>
+<tr th:each="e : ${events}">
+<td th:text="${e.id}">1</td>
+<td th:text="${e.title}">Event 1</td>
+<td th:text="${e.description}">Description 1</td>
+<td th:text="${e.date}">2025-10-20</td>
+<td th:text="${e.time}">10:00 AM</td>
+<td th:text="${e.venue}">Hall A</td>
+<td th:text="${e.category}">Tech</td>
+<td th:text="${e.maxParticipates}"
+    th:classappend="${e.maxParticipates < 50 ? 'heat-low' : (e.maxParticipates < 100 ? 'heat-medium' : 'heat-high')}">50</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<!-- Users Table -->
+<div class="card">
+<h3>Users</h3>
+<table>
+<thead>
+<tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th></tr>
+</thead>
+<tbody>
+<tr th:each="u : ${users}">
+<td th:text="${u.id}">1</td>
+<td th:text="${u.name}">John</td>
+<td th:text="${u.email}">john@example.com</td>
+<td th:text="${u.phone}">1234567890</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<!-- Registrations Table -->
+<div class="card">
+<h3>Registrations</h3>
+<table>
+<thead>
+<tr><th>ID</th><th>Name</th><th>Email</th><th>Gender</th><th>About</th></tr>
+</thead>
+<tbody>
+<tr th:each="r : ${registrations}">
+<td th:text="${r.id}">1</td>
+<td th:text="${r.fullName}">Alice</td>
+<td th:text="${r.email}">alice@example.com</td>
+<td th:text="${r.gender}">F</td>
+<td th:text="${r.about}">Student</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<!-- Results Table -->
+<div class="card">
+<h3>Results</h3>
+<table>
+<thead>
+<tr><th>ID</th><th>Event ID</th><th>Winner</th><th>Position</th><th>Score</th><th>Total Mark</th><th>Judge Remark</th><th>Certificate</th></tr>
+</thead>
+<tbody>
+<tr th:each="res : ${results}">
+<td th:text="${res.id}">1</td>
+<td th:text="${res.eventId}">1</td>
+<td th:text="${res.winnerName}">Alice</td>
+<td th:text="${res.position}">1st</td>
+<td th:text="${res.score}"
+    th:classappend="${T(java.lang.Integer).parseInt(res.score) < 50 ? 'heat-low' : (T(java.lang.Integer).parseInt(res.score) < 80 ? 'heat-medium' : 'heat-high')}">75</td>
+<td th:text="${res.totalMark}"
+    th:classappend="${T(java.lang.Integer).parseInt(res.totalMark) < 50 ? 'heat-low' : (T(java.lang.Integer).parseInt(res.totalMark) < 80 ? 'heat-medium' : 'heat-high')}">90</td>
+<td th:text="${res.judgeRemark}">Excellent</td>
+<td th:text="${res.certificate}">cert1.pdf</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<!-- Results Chart -->
+<div class="card">
+<h3>Score vs Total Mark</h3>
+<canvas id="resultsChart"></canvas>
+</div>
+
+</div>
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+const results = /*[[${results}]]*/ [];
+
+const labels = results.map(r => r.winnerName);
+const scores = results.map(r => parseFloat(r.score));
+const totalMarks = results.map(r => parseFloat(r.totalMark));
+
+new Chart(document.getElementById('resultsChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+        labels: labels,
+        datasets: [
+            { label: 'Score', data: scores, backgroundColor:'#00ffcc' },
+            { label: 'Total Mark', data: totalMarks, backgroundColor:'#ff6600' }
+        ]
+    },
+    options: { 
+        responsive:true, 
+        plugins:{legend:{position:'top'}}, 
+        scales:{y:{beginAtZero:true}}
+    }
+});
+/*]]>*/
+</script>
+</body>
+</html>
